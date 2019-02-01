@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Yuconz_System/Yuconz_UseCaseDiagram.di&apos; to &apos;Yuconz_UseCaseDiagram4.di&apos;" description="Rename resource &apos;Yuconz_UseCaseDiagram.di&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Yuconz_UseCaseDiagram.di" name="Yuconz_UseCaseDiagram4.di" stamp="1544724802734" updateReferences="true"/>
+</session>
