@@ -3,11 +3,16 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
+import java.util.Scanner;
 import java.awt.event.ActionEvent;
 
 public class AppController {
@@ -76,6 +81,39 @@ public class AppController {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
+				String usrNameInp = txtUsr.getText();
+				String usrPwdInp = txtPwd.getText();
+				System.out.println(usrNameInp);
+				System.out.println(usrPwdInp);
+				System.out.println("Break");
+				
+				File users = new File("users.txt");
+				try {
+					Scanner in = new Scanner(users);
+					
+					while(in.hasNextLine()) {
+						String s = in.nextLine();
+						String[] sArray = s.split(",");
+						
+						System.out.println(sArray[0]);
+						System.out.println(sArray[1]); //test to see if values were actually obtained
+						
+						if(sArray[0] == usrNameInp && sArray[1] == usrPwdInp) {
+							JOptionPane.showMessageDialog(null, "Login has been successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
+							
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					
+					in.close();
+					
+				} catch (FileNotFoundException e1) {
+					JOptionPane.showMessageDialog(null, "User DB not found.", "Error", JOptionPane.ERROR_MESSAGE);;
+				}
 			}
 		});
 		btnLogin.setBounds(186, 199, 89, 23);
