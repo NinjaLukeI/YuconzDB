@@ -81,13 +81,7 @@ public class AppController {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				
-				String usrNameInp = txtUsr.getText();
-				String usrPwdInp = txtPwd.getText();
-				System.out.println(usrNameInp);
-				System.out.println(usrPwdInp);
-				System.out.println("Break");
+
 				
 				File users = new File("users.txt");
 				try {
@@ -97,15 +91,26 @@ public class AppController {
 						String s = in.nextLine();
 						String[] sArray = s.split(",");
 						
+						String usrNameInp = txtUsr.getText();
+						String usrPwdInp = txtPwd.getText();
+						
+						
 						System.out.println(sArray[0]);
 						System.out.println(sArray[1]); //test to see if values were actually obtained
 						
-						if(sArray[0] == usrNameInp && sArray[1] == usrPwdInp) {
-							JOptionPane.showMessageDialog(null, "Login has been successful.", "Success", JOptionPane.INFORMATION_MESSAGE);
+						if(usrNameInp.trim().equals(sArray[0].trim()) && usrPwdInp.trim().equals(sArray[1])) {
+							JOptionPane.showMessageDialog(null, "Login has been successful.", 
+									"Success", JOptionPane.INFORMATION_MESSAGE);
+							break;
 							
 						}
 						else {
-							JOptionPane.showMessageDialog(null, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+							
+							if(in.hasNextLine() == false) {
+								JOptionPane.showMessageDialog(null, "Invalid username or password.",
+										"Error", JOptionPane.ERROR_MESSAGE);
+							}
+							
 						}
 					}
 					
