@@ -9,11 +9,15 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
+import java.awt.AWTException; 
+import java.awt.Robot; 
+import java.awt.event.KeyEvent; 
+import java.io.*;
 
 public class AppController {
 
@@ -124,4 +128,8 @@ public class AppController {
 		btnLogin.setBounds(186, 199, 89, 23);
 		frmYuconzDatabase.getContentPane().add(btnLogin);
 	}
+	
+
 }
+
+	
