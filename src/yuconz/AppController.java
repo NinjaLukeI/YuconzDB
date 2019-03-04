@@ -181,6 +181,7 @@ public class AppController {
 				try {
 					Scanner in = new Scanner(users);
 					
+					//loops through lines in the users file
 					while(in.hasNextLine()) {
 						String s = in.nextLine();
 						String[] sArray = s.split(",");
@@ -198,14 +199,26 @@ public class AppController {
 							
 							YuconzSysFrame.setVisible(true);
 							btnLogin.setVisible(false);
+							
+							//if user has perms to modify, the modify button will be visible, otherwise it'll be invisible
+							if(!sArray[8].trim().equals("canModify")) {
+								btnModify.setVisible(false);
+							}
+							else {
+								btnModify.setVisible(true);
+							}
+							
+							
 							lblWelcomeUser.setText("Welcome " + sArray[0]);
 							
+							//sets the text fields to have the same details as those in the users file
 							txtName.setText(sArray[3]);
 							txtDob.setText(sArray[4]);
 							txtPostcode.setText(sArray[5]);
 							txtAddress.setText(sArray[6]);
 							txtTelNum.setText(sArray[7]);
 							
+							//if they have this flag in the users file, they'll be able to modify
 							if(sArray[8].trim().equals("canModify")) {
 								txtName.setEditable(true);
 								txtDob.setEditable(true);
@@ -214,27 +227,7 @@ public class AppController {
 								txtTelNum.setEditable(true);
 							}
 							
-							btnModify.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									
-									Path path = Paths.get("users.txt");
-									Charset charset = StandardCharsets.UTF_8;
-									
-									try {
-										String content = new String(Files.readAllBytes(path), charset);
-										content = content.replaceAll(sArray[3], txtName.getText());
-										content = content.replaceAll(sArray[4], txtDob.getText());
-										content = content.replaceAll(sArray[5], txtPostcode.getText());
-										content = content.replaceAll(sArray[6], txtAddress.getText());
-										content = content.replaceAll(sArray[7], txtTelNum.getText());
-										Files.write(path, content.getBytes(charset));
-									} catch (IOException e1) {
-										e1.printStackTrace();
-									}
-									
-									
-								}
-							});
+							
 							
 								
 							break;
@@ -257,6 +250,55 @@ public class AppController {
 				}
 			}
 		});
+		
+		//this code is responsible for writing to the users.txt file, modifying personal details
+		btnModify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Scanner in;
+				try {
+					in = new Scanner(users);
+					
+					while(in.hasNextLine()) {
+						String s = in.nextLine();
+						String[] sArray = s.split(",");
+						
+						Path path = Paths.get("users.txt");
+						Charset charset = StandardCharsets.UTF_8;
+						
+						//tries to get everything from lines in the yuconz system, and replace them with details in the users.txt file
+						try {
+							String content = new String(Files.readAllBytes(path), charset);
+							content = content.replaceAll(sArray[3], txtName.getText());
+							content = content.replaceAll(sArray[4], txtDob.getText());
+							content = content.replaceAll(sArray[5], txtPostcode.getText());
+							content = content.replaceAll(sArray[6], txtAddress.getText());
+							content = content.replaceAll(sArray[7], txtTelNum.getText());
+							Files.write(path, content.getBytes(charset));
+							
+							JOptionPane.showMessageDialog(null, "Details have been successfully modified.", 
+									"Success", JOptionPane.INFORMATION_MESSAGE);
+							
+							//closes the scanner
+							in.close();
+							
+							
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						
+						
+					}
+					
+				} catch (FileNotFoundException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				
+				
+		}});
+		
+		
 		btnLogin.setBounds(186, 199, 89, 23);
 		
 		JButton btnLogout = new JButton("Logout");
@@ -272,6 +314,8 @@ public class AppController {
 				txtPostcode.setEditable(false);
 				txtAddress.setEditable(false);
 				txtTelNum.setEditable(false);
+				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
+						"Success", JOptionPane.INFORMATION_MESSAGE);
 				
 			}
 		});
