@@ -10,8 +10,11 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import java.awt.AWTException; 
@@ -29,6 +32,11 @@ public class AppController {
 	private JFrame frmYuconzDatabase;
 	private JTextField txtUsr;
 	private JTextField txtPwd;
+	private JTextField txtName;
+	private JTextField txtDob;
+	private JTextField txtPostcode;
+	private JTextField txtAddress;
+	private JTextField txtTelNum;
 
 	/**
 	 * Launch the application.
@@ -57,6 +65,9 @@ public class AppController {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		File users = new File("users.txt");
+		
 		frmYuconzDatabase = new JFrame();
 		frmYuconzDatabase.setVisible(true);
 		frmYuconzDatabase.setTitle("Yuconz Database");
@@ -70,32 +81,33 @@ public class AppController {
 		frmYuconzDatabase.getContentPane().add(YuconzSysFrame);
 		YuconzSysFrame.getContentPane().setLayout(null);
 		
-		JButton btnNewButton = new JButton("Modify Personal File");
-		btnNewButton.setBounds(21, 67, 169, 64);
-		YuconzSysFrame.getContentPane().add(btnNewButton);
+		JButton btnModify = new JButton("Modify Personal File");
+		
+		btnModify.setBounds(21, 67, 169, 64);
+		YuconzSysFrame.getContentPane().add(btnModify);
 		
 		JButton btnCreatePersonalFile = new JButton("Create Personal File");
 		btnCreatePersonalFile.setBounds(21, 156, 169, 64);
 		YuconzSysFrame.getContentPane().add(btnCreatePersonalFile);
 		
 		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(218, 67, 217, 14);
+		lblName.setBounds(200, 67, 50, 14);
 		YuconzSysFrame.getContentPane().add(lblName);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of Birth:");
-		lblDateOfBirth.setBounds(218, 103, 217, 14);
+		lblDateOfBirth.setBounds(200, 103, 81, 14);
 		YuconzSysFrame.getContentPane().add(lblDateOfBirth);
 		
 		JLabel lblPostcode = new JLabel("Postcode:");
-		lblPostcode.setBounds(218, 141, 217, 14);
+		lblPostcode.setBounds(200, 141, 61, 14);
 		YuconzSysFrame.getContentPane().add(lblPostcode);
 		
 		JLabel lblAddress = new JLabel("Address:");
-		lblAddress.setBounds(218, 181, 217, 14);
+		lblAddress.setBounds(200, 181, 50, 14);
 		YuconzSysFrame.getContentPane().add(lblAddress);
 		
 		JLabel lblTelephoneNumber = new JLabel("Telephone Number:");
-		lblTelephoneNumber.setBounds(218, 218, 217, 14);
+		lblTelephoneNumber.setBounds(200, 218, 106, 14);
 		YuconzSysFrame.getContentPane().add(lblTelephoneNumber);
 		
 		JLabel lblWelcomeUser = new JLabel("Welcome, User");
@@ -130,12 +142,42 @@ public class AppController {
 		frmYuconzDatabase.getContentPane().add(txtPwd);
 		txtPwd.setColumns(10);
 		
+		txtName = new JTextField();
+		txtName.setEditable(false);
+		txtName.setBounds(246, 67, 189, 20);
+		YuconzSysFrame.getContentPane().add(txtName);
+		txtName.setColumns(10);
+		
+		txtDob = new JTextField();
+		txtDob.setEditable(false);
+		txtDob.setBounds(277, 100, 158, 20);
+		YuconzSysFrame.getContentPane().add(txtDob);
+		txtDob.setColumns(10);
+		
+		txtPostcode = new JTextField();
+		txtPostcode.setEditable(false);
+		txtPostcode.setBounds(256, 138, 179, 20);
+		YuconzSysFrame.getContentPane().add(txtPostcode);
+		txtPostcode.setColumns(10);
+		
+		txtAddress = new JTextField();
+		txtAddress.setEditable(false);
+		txtAddress.setBounds(246, 178, 189, 20);
+		YuconzSysFrame.getContentPane().add(txtAddress);
+		txtAddress.setColumns(10);
+		
+		txtTelNum = new JTextField();
+		txtTelNum.setEditable(false);
+		txtTelNum.setBounds(298, 215, 137, 20);
+		YuconzSysFrame.getContentPane().add(txtTelNum);
+		txtTelNum.setColumns(10);
+		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				
-				File users = new File("users.txt");
+				
 				try {
 					Scanner in = new Scanner(users);
 					
@@ -158,13 +200,41 @@ public class AppController {
 							btnLogin.setVisible(false);
 							lblWelcomeUser.setText("Welcome " + sArray[0]);
 							
-							lblName.setText("Name: " + sArray[3]);
-							lblDateOfBirth.setText("Date of Birth: " + sArray[4]);
-							lblPostcode.setText("Postcode: " + sArray[5]);
-							lblAddress.setText("Address :" + sArray[6]);
-							lblTelephoneNumber.setText("Telephone Number: " + sArray[7]);
+							txtName.setText(sArray[3]);
+							txtDob.setText(sArray[4]);
+							txtPostcode.setText(sArray[5]);
+							txtAddress.setText(sArray[6]);
+							txtTelNum.setText(sArray[7]);
 							
+							if(sArray[8].trim().equals("canModify")) {
+								txtName.setEditable(true);
+								txtDob.setEditable(true);
+								txtPostcode.setEditable(true);
+								txtAddress.setEditable(true);
+								txtTelNum.setEditable(true);
+							}
 							
+							btnModify.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									
+									Path path = Paths.get("users.txt");
+									Charset charset = StandardCharsets.UTF_8;
+									
+									try {
+										String content = new String(Files.readAllBytes(path), charset);
+										content = content.replaceAll(sArray[3], txtName.getText());
+										content = content.replaceAll(sArray[4], txtDob.getText());
+										content = content.replaceAll(sArray[5], txtPostcode.getText());
+										content = content.replaceAll(sArray[6], txtAddress.getText());
+										content = content.replaceAll(sArray[7], txtTelNum.getText());
+										Files.write(path, content.getBytes(charset));
+									} catch (IOException e1) {
+										e1.printStackTrace();
+									}
+									
+									
+								}
+							});
 							
 								
 							break;
@@ -197,15 +267,18 @@ public class AppController {
 				btnLogin.setVisible(true);
 				txtUsr.setText("");
 				txtPwd.setText("");
-				lblName.setText("");
-				lblPostcode.setText("");
-				lblDateOfBirth.setText("");
-				lblAddress.setText("");
-				lblTelephoneNumber.setText("");
+				txtName.setEditable(false);
+				txtDob.setEditable(false);
+				txtPostcode.setEditable(false);
+				txtAddress.setEditable(false);
+				txtTelNum.setEditable(false);
+				
 			}
 		});
 		btnLogout.setBounds(346, 7, 89, 23);
 		YuconzSysFrame.getContentPane().add(btnLogout);
+		
+
 		
 		frmYuconzDatabase.getContentPane().add(btnLogin);
 		
