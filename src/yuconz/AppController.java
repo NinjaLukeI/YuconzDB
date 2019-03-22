@@ -251,7 +251,7 @@ public class AppController {
 								
 							break;
 							
-						}
+						} 
 						else {
 							
 							if(in.hasNextLine() == false) {
