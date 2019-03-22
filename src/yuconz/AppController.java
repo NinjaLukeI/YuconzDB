@@ -27,6 +27,15 @@ import java.awt.BorderLayout;
 import java.awt.Label;
 import javax.swing.BoxLayout;
 
+//note for other programmers:
+//because this is prototype code; this is probably unlike how the actual code should be
+//purely based on the fact this is different to the UML. 
+//in regards to the users themselves, code could potentially be written to make users using params obtained
+//from the users.txt file. however, an implementation using an sql database may be more manageable and smarter
+//than trying to make a class out of every single user in the database. in reality this makes more sense and 
+//is most likely the ideal route. as long as they have the same attributes noted in the UML and their permission
+//types are noted in the sql, an implementation using this is the wisest thing
+
 public class AppController {
 
 	private JFrame frmYuconzDatabase;
@@ -62,11 +71,14 @@ public class AppController {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the contents of the frame. This is automatically made with windowbuilder so this
+	 *doesn't really need to be modified or touched.
 	 */
 	private void initialize() {
 		
 		File users = new File("users.txt");
+		//this is opening the users.txt file that stores information about each user of the system
+		
 		
 		frmYuconzDatabase = new JFrame();
 		frmYuconzDatabase.setVisible(true);
@@ -144,17 +156,26 @@ public class AppController {
 		YuconzSysFrame.getContentPane().add(txtTelNum);
 		txtTelNum.setColumns(10);
 		
-		//this code is responsible for writing to the users.txt file, modifying personal details
+		/**this code is responsible for writing to the users.txt file, modifying personal details
+		 * this is in relation to user files
+		 * potentially this sort of code would be in database.
+		 * when moving this code to it's own individual class, after the 'actionPerformed' method
+		 * is called, the code can just be called from the database class or w/e class this code would pertain to.
+		 */
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				//so for example, after this point, the code would be moved to another class.
+				//in it's place, there would be a function call to said method, in this class.
 				
 				Scanner in;
 				try {
 					in = new Scanner(users);
 					
 					while(in.hasNextLine()) {
-						String s = in.nextLine();
-						String[] sArray = s.split(",");
+						String s = in.nextLine(); //for looping through the users file
+						String[] sArray = s.split(","); //this code takes each value on a line and removes commas seperating them
+						
 						
 						Path path = Paths.get("users.txt");
 						Charset charset = StandardCharsets.UTF_8;
@@ -191,6 +212,13 @@ public class AppController {
 				
 		}});
 		
+		/**this button is responsible for 'logging' the user into the system.
+		 * but like all the other sort of 'methods' in this appcontroller class, all of the code
+		 * can just be moved to possibly the authenticator class, and a call just being made.
+		 * the only thing that needs to be noted is because this is prototype code; 
+		 * it does not have the implementations the UML document states, so those sorts of things would need to be added
+		 * 
+		 */
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -203,23 +231,25 @@ public class AppController {
 					//loops through lines in the users file
 					while(in.hasNextLine()) {
 						String s = in.nextLine();
-						String[] sArray = s.split(",");
+						String[] sArray = s.split(","); //splits the values in the users.txt file
 						
 						String usrNameInp = txtUsr.getText();
 						String usrPwdInp = txtPwd.getText();
 						
-						
-						System.out.println(sArray[0]);
+						//sArray[0] is the username, sArray[1] is the password
+						System.out.println(sArray[0]); 
 						System.out.println(sArray[1]); //test to see if values were actually obtained
 						
 						if(usrNameInp.trim().equals(sArray[0].trim()) && usrPwdInp.trim().equals(sArray[1])) {
 							JOptionPane.showMessageDialog(null, "Login has been successful.", 
 									"Success", JOptionPane.INFORMATION_MESSAGE);
 							
-							YuconzSysFrame.setVisible(true);
-							btnLogin.setVisible(false);
+							YuconzSysFrame.setVisible(true); //this is setting the YuconzSysFrame to being visible.
+							//this frame is the one that shows the employee details and such.
+							btnLogin.setVisible(false);//this removes the login button from being visible
 							
 							//if user has perms to modify, the modify button will be visible, otherwise it'll be invisible
+							
 							if(!sArray[8].trim().equals("canModify")) {
 								btnModify.setVisible(false);
 							}
@@ -253,7 +283,7 @@ public class AppController {
 							
 						} 
 						else {
-							
+							//if there's no line left in the users file, bring up this error message
 							if(in.hasNextLine() == false) {
 								JOptionPane.showMessageDialog(null, "Invalid username or password.",
 										"Error", JOptionPane.ERROR_MESSAGE);
@@ -263,7 +293,8 @@ public class AppController {
 					}
 					
 					in.close();
-					
+				
+					//exception in case the users file is not found
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "User DB not found.", "Error", JOptionPane.ERROR_MESSAGE);;
 				}
@@ -273,6 +304,7 @@ public class AppController {
 		
 		btnLogin.setBounds(186, 199, 89, 23);
 		
+		//this logs the user out of the system
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -281,6 +313,11 @@ public class AppController {
 				btnLogin.setVisible(true);
 				txtUsr.setText("");
 				txtPwd.setText("");
+				txtName.setText("");
+				txtDob.setText("");
+				txtPostcode.setText("");
+				txtAddress.setText("");
+				txtTelNum.setText("");
 				txtName.setEditable(false);
 				txtDob.setEditable(false);
 				txtPostcode.setEditable(false);
