@@ -114,34 +114,6 @@ public class AppController {
 		lblWelcomeUser.setBounds(10, 11, 425, 14);
 		YuconzSysFrame.getContentPane().add(lblWelcomeUser);
 		
-		
-		
-		
-		JLabel lblYuconz = new JLabel("Welcome To Yuconz User Database");
-		lblYuconz.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblYuconz.setHorizontalAlignment(SwingConstants.CENTER);
-		lblYuconz.setBounds(95, 26, 258, 14);
-		frmYuconzDatabase.getContentPane().add(lblYuconz);
-		
-		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setBounds(39, 97, 64, 14);
-		frmYuconzDatabase.getContentPane().add(lblUsername);
-		
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setBounds(39, 137, 64, 14);
-		frmYuconzDatabase.getContentPane().add(lblPassword);
-		
-		txtUsr = new JTextField();
-		txtUsr.setBounds(154, 94, 154, 20);
-		frmYuconzDatabase.getContentPane().add(txtUsr);
-		txtUsr.setColumns(6);
-		
-		txtPwd = new JTextField();
-		txtPwd.setVerifyInputWhenFocusTarget(false);
-		txtPwd.setBounds(154, 134, 154, 20);
-		frmYuconzDatabase.getContentPane().add(txtPwd);
-		txtPwd.setColumns(10);
-		
 		txtName = new JTextField();
 		txtName.setEditable(false);
 		txtName.setBounds(246, 67, 189, 20);
@@ -171,6 +143,53 @@ public class AppController {
 		txtTelNum.setBounds(298, 215, 137, 20);
 		YuconzSysFrame.getContentPane().add(txtTelNum);
 		txtTelNum.setColumns(10);
+		
+		//this code is responsible for writing to the users.txt file, modifying personal details
+		btnModify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Scanner in;
+				try {
+					in = new Scanner(users);
+					
+					while(in.hasNextLine()) {
+						String s = in.nextLine();
+						String[] sArray = s.split(",");
+						
+						Path path = Paths.get("users.txt");
+						Charset charset = StandardCharsets.UTF_8;
+						
+						//tries to get everything from lines in the yuconz system, and replace them with details in the users.txt file
+						try {
+							String content = new String(Files.readAllBytes(path), charset);
+							content = content.replaceAll(sArray[3], txtName.getText());
+							content = content.replaceAll(sArray[4], txtDob.getText());
+							content = content.replaceAll(sArray[5], txtPostcode.getText());
+							content = content.replaceAll(sArray[6], txtAddress.getText());
+							content = content.replaceAll(sArray[7], txtTelNum.getText());
+							Files.write(path, content.getBytes(charset));
+							
+							JOptionPane.showMessageDialog(null, "Details have been successfully modified.", 
+									"Success", JOptionPane.INFORMATION_MESSAGE);
+							
+							//closes the scanner
+							in.close();
+							
+							
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+						
+						
+					}
+					
+				} catch (FileNotFoundException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				
+				
+		}});
 		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
@@ -251,53 +270,6 @@ public class AppController {
 			}
 		});
 		
-		//this code is responsible for writing to the users.txt file, modifying personal details
-		btnModify.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				Scanner in;
-				try {
-					in = new Scanner(users);
-					
-					while(in.hasNextLine()) {
-						String s = in.nextLine();
-						String[] sArray = s.split(",");
-						
-						Path path = Paths.get("users.txt");
-						Charset charset = StandardCharsets.UTF_8;
-						
-						//tries to get everything from lines in the yuconz system, and replace them with details in the users.txt file
-						try {
-							String content = new String(Files.readAllBytes(path), charset);
-							content = content.replaceAll(sArray[3], txtName.getText());
-							content = content.replaceAll(sArray[4], txtDob.getText());
-							content = content.replaceAll(sArray[5], txtPostcode.getText());
-							content = content.replaceAll(sArray[6], txtAddress.getText());
-							content = content.replaceAll(sArray[7], txtTelNum.getText());
-							Files.write(path, content.getBytes(charset));
-							
-							JOptionPane.showMessageDialog(null, "Details have been successfully modified.", 
-									"Success", JOptionPane.INFORMATION_MESSAGE);
-							
-							//closes the scanner
-							in.close();
-							
-							
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-						
-						
-					}
-					
-				} catch (FileNotFoundException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-				
-				
-		}});
-		
 		
 		btnLogin.setBounds(186, 199, 89, 23);
 		
@@ -321,6 +293,36 @@ public class AppController {
 		});
 		btnLogout.setBounds(346, 7, 89, 23);
 		YuconzSysFrame.getContentPane().add(btnLogout);
+		
+		
+		
+		
+		JLabel lblYuconz = new JLabel("Welcome To Yuconz User Database");
+		lblYuconz.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblYuconz.setHorizontalAlignment(SwingConstants.CENTER);
+		lblYuconz.setBounds(95, 26, 258, 14);
+		frmYuconzDatabase.getContentPane().add(lblYuconz);
+		
+		JLabel lblUsername = new JLabel("Username:");
+		lblUsername.setBounds(39, 97, 64, 14);
+		frmYuconzDatabase.getContentPane().add(lblUsername);
+		
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setBounds(39, 137, 64, 14);
+		frmYuconzDatabase.getContentPane().add(lblPassword);
+		
+		txtUsr = new JTextField();
+		txtUsr.setBounds(154, 94, 154, 20);
+		frmYuconzDatabase.getContentPane().add(txtUsr);
+		txtUsr.setColumns(6);
+		
+		txtPwd = new JTextField();
+		txtPwd.setVerifyInputWhenFocusTarget(false);
+		txtPwd.setBounds(154, 134, 154, 20);
+		frmYuconzDatabase.getContentPane().add(txtPwd);
+		txtPwd.setColumns(10);
+		
+		
 		
 
 		
