@@ -26,6 +26,8 @@ import javax.swing.JInternalFrame;
 import java.awt.BorderLayout;
 import java.awt.Label;
 import javax.swing.BoxLayout;
+import javax.swing.JPasswordField;
+import javax.swing.JTabbedPane;
 
 //note for other programmers:
 //because this is prototype code; this is probably unlike how the actual code should be
@@ -40,7 +42,7 @@ public class AppController {
 
 	private JFrame frmYuconzDatabase;
 	private JTextField txtUsr;
-	private JTextField txtPwd;
+	private JPasswordField txtPwd;
 	private JTextField txtName;
 	private JTextField txtDob;
 	private JTextField txtPostcode;
@@ -79,6 +81,7 @@ public class AppController {
 		File users = new File("users.txt");
 		//this is opening the users.txt file that stores information about each user of the system
 		
+		AuthenticationServer AuthServ = new AuthenticationServer();
 		
 		frmYuconzDatabase = new JFrame();
 		frmYuconzDatabase.setVisible(true);
@@ -87,81 +90,109 @@ public class AppController {
 		frmYuconzDatabase.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmYuconzDatabase.getContentPane().setLayout(null);
 		
-		JInternalFrame YuconzSysFrame = new JInternalFrame("Yuconz Database");
-		YuconzSysFrame.setVisible(false);
-		YuconzSysFrame.setBounds(-14, -32, 461, 307);
-		frmYuconzDatabase.getContentPane().add(YuconzSysFrame);
-		YuconzSysFrame.getContentPane().setLayout(null);
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setVisible(false);
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabbedPane.setBounds(0, 0, 434, 261);
+		frmYuconzDatabase.getContentPane().add(tabbedPane);
+		
+		JPanel personalDetails = new JPanel();
+		tabbedPane.addTab("Personal Details", null, personalDetails, null);
+		personalDetails.setLayout(null);
 		
 		JButton btnModify = new JButton("Modify Personal File");
-		
-		btnModify.setBounds(21, 67, 169, 64);
-		YuconzSysFrame.getContentPane().add(btnModify);
+		btnModify.setBounds(52, 186, 172, 23);
+		personalDetails.add(btnModify);
 		
 		JButton btnCreatePersonalFile = new JButton("Create Personal File");
-		btnCreatePersonalFile.setBounds(21, 156, 169, 64);
-		YuconzSysFrame.getContentPane().add(btnCreatePersonalFile);
+		btnCreatePersonalFile.setBounds(234, 186, 172, 23);
+		personalDetails.add(btnCreatePersonalFile);
 		
 		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(200, 67, 50, 14);
-		YuconzSysFrame.getContentPane().add(lblName);
+		lblName.setBounds(28, 44, 84, 14);
+		personalDetails.add(lblName);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of Birth:");
-		lblDateOfBirth.setBounds(200, 103, 81, 14);
-		YuconzSysFrame.getContentPane().add(lblDateOfBirth);
+		lblDateOfBirth.setBounds(25, 158, 111, 14);
+		personalDetails.add(lblDateOfBirth);
 		
 		JLabel lblPostcode = new JLabel("Postcode:");
-		lblPostcode.setBounds(200, 141, 61, 14);
-		YuconzSysFrame.getContentPane().add(lblPostcode);
+		lblPostcode.setBounds(28, 126, 108, 14);
+		personalDetails.add(lblPostcode);
 		
 		JLabel lblAddress = new JLabel("Address:");
-		lblAddress.setBounds(200, 181, 50, 14);
-		YuconzSysFrame.getContentPane().add(lblAddress);
-		
-		JLabel lblTelephoneNumber = new JLabel("Telephone Number:");
-		lblTelephoneNumber.setBounds(200, 218, 106, 14);
-		YuconzSysFrame.getContentPane().add(lblTelephoneNumber);
+		lblAddress.setBounds(28, 72, 84, 14);
+		personalDetails.add(lblAddress);
 		
 		JLabel lblWelcomeUser = new JLabel("Welcome, User");
-		lblWelcomeUser.setBounds(10, 11, 425, 14);
-		YuconzSysFrame.getContentPane().add(lblWelcomeUser);
+		lblWelcomeUser.setBounds(18, 9, 175, 14);
+		personalDetails.add(lblWelcomeUser);
 		
 		txtName = new JTextField();
+		txtName.setBounds(132, 41, 171, 20);
+		personalDetails.add(txtName);
 		txtName.setEditable(false);
-		txtName.setBounds(246, 67, 189, 20);
-		YuconzSysFrame.getContentPane().add(txtName);
 		txtName.setColumns(10);
 		
 		txtDob = new JTextField();
+		txtDob.setBounds(132, 155, 171, 20);
+		personalDetails.add(txtDob);
 		txtDob.setEditable(false);
-		txtDob.setBounds(277, 100, 158, 20);
-		YuconzSysFrame.getContentPane().add(txtDob);
 		txtDob.setColumns(10);
 		
 		txtPostcode = new JTextField();
+		txtPostcode.setBounds(132, 123, 88, 20);
+		personalDetails.add(txtPostcode);
 		txtPostcode.setEditable(false);
-		txtPostcode.setBounds(256, 138, 179, 20);
-		YuconzSysFrame.getContentPane().add(txtPostcode);
 		txtPostcode.setColumns(10);
 		
 		txtAddress = new JTextField();
+		txtAddress.setBounds(132, 69, 171, 20);
+		personalDetails.add(txtAddress);
 		txtAddress.setEditable(false);
-		txtAddress.setBounds(246, 178, 189, 20);
-		YuconzSysFrame.getContentPane().add(txtAddress);
 		txtAddress.setColumns(10);
 		
 		txtTelNum = new JTextField();
+		txtTelNum.setBounds(132, 97, 171, 20);
+		personalDetails.add(txtTelNum);
 		txtTelNum.setEditable(false);
-		txtTelNum.setBounds(298, 215, 137, 20);
-		YuconzSysFrame.getContentPane().add(txtTelNum);
 		txtTelNum.setColumns(10);
 		
-		/**this code is responsible for writing to the users.txt file, modifying personal details
-		 * this is in relation to user files
-		 * potentially this sort of code would be in database.
-		 * when moving this code to it's own individual class, after the 'actionPerformed' method
-		 * is called, the code can just be called from the database class or w/e class this code would pertain to.
-		 */
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.setBounds(333, 5, 86, 23);
+		personalDetails.add(btnLogout);
+		
+		JLabel lblTelephoneNumber = new JLabel("Telephone Num:");
+		lblTelephoneNumber.setBounds(28, 100, 108, 14);
+		personalDetails.add(lblTelephoneNumber);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("Annual Review", null, panel, null);
+		
+		JButton btnLogin = new JButton("Login");
+		
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				tabbedPane.setVisible(false);
+				btnLogin.setVisible(true);
+				txtUsr.setText("");
+				txtPwd.setText("");
+				txtName.setText("");
+				txtDob.setText("");
+				txtPostcode.setText("");
+				txtAddress.setText("");
+				txtTelNum.setText("");
+				txtName.setEditable(false);
+				txtDob.setEditable(false);
+				txtPostcode.setEditable(false);
+				txtAddress.setEditable(false);
+				txtTelNum.setEditable(false);
+				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
+						"Success", JOptionPane.INFORMATION_MESSAGE);
+				
+			}
+		});
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -212,6 +243,26 @@ public class AppController {
 				
 		}});
 		
+		txtUsr = new JTextField();
+		txtUsr.setBounds(154, 94, 154, 20);
+		frmYuconzDatabase.getContentPane().add(txtUsr);
+		txtUsr.setColumns(6);
+		
+		txtPwd = new JPasswordField();
+		txtPwd.setVerifyInputWhenFocusTarget(false);
+		txtPwd.setBounds(154, 134, 154, 20);
+		frmYuconzDatabase.getContentPane().add(txtPwd);
+		txtPwd.setColumns(10);
+		
+		
+		
+		/**this code is responsible for writing to the users.txt file, modifying personal details
+		 * this is in relation to user files
+		 * potentially this sort of code would be in database.
+		 * when moving this code to it's own individual class, after the 'actionPerformed' method
+		 * is called, the code can just be called from the database class or w/e class this code would pertain to.
+		 */
+		
 		/**this button is responsible for 'logging' the user into the system.
 		 * but like all the other sort of 'methods' in this appcontroller class, all of the code
 		 * can just be moved to possibly the authenticator class, and a call just being made.
@@ -219,7 +270,7 @@ public class AppController {
 		 * it does not have the implementations the UML document states, so those sorts of things would need to be added
 		 * 
 		 */
-		JButton btnLogin = new JButton("Login");
+		
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -234,7 +285,7 @@ public class AppController {
 						String[] sArray = s.split(","); //splits the values in the users.txt file
 						
 						String usrNameInp = txtUsr.getText();
-						String usrPwdInp = txtPwd.getText();
+						String usrPwdInp = String.valueOf(txtPwd.getPassword());
 						
 						//sArray[0] is the username, sArray[1] is the password
 						System.out.println(sArray[0]); 
@@ -244,7 +295,7 @@ public class AppController {
 							JOptionPane.showMessageDialog(null, "Login has been successful.", 
 									"Success", JOptionPane.INFORMATION_MESSAGE);
 							
-							YuconzSysFrame.setVisible(true); //this is setting the YuconzSysFrame to being visible.
+							tabbedPane.setVisible(true); //this is setting the YuconzSysFrame to being visible.
 							//this frame is the one that shows the employee details and such.
 							btnLogin.setVisible(false);//this removes the login button from being visible
 							
@@ -294,7 +345,7 @@ public class AppController {
 					
 					in.close();
 				
-					//exception in case the users file is not found
+					
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "User DB not found.", "Error", JOptionPane.ERROR_MESSAGE);;
 				}
@@ -303,33 +354,6 @@ public class AppController {
 		
 		
 		btnLogin.setBounds(186, 199, 89, 23);
-		
-		//this logs the user out of the system
-		JButton btnLogout = new JButton("Logout");
-		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				YuconzSysFrame.setVisible(false);
-				btnLogin.setVisible(true);
-				txtUsr.setText("");
-				txtPwd.setText("");
-				txtName.setText("");
-				txtDob.setText("");
-				txtPostcode.setText("");
-				txtAddress.setText("");
-				txtTelNum.setText("");
-				txtName.setEditable(false);
-				txtDob.setEditable(false);
-				txtPostcode.setEditable(false);
-				txtAddress.setEditable(false);
-				txtTelNum.setEditable(false);
-				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
-						"Success", JOptionPane.INFORMATION_MESSAGE);
-				
-			}
-		});
-		btnLogout.setBounds(346, 7, 89, 23);
-		YuconzSysFrame.getContentPane().add(btnLogout);
 		
 		
 		
@@ -348,16 +372,7 @@ public class AppController {
 		lblPassword.setBounds(39, 137, 64, 14);
 		frmYuconzDatabase.getContentPane().add(lblPassword);
 		
-		txtUsr = new JTextField();
-		txtUsr.setBounds(154, 94, 154, 20);
-		frmYuconzDatabase.getContentPane().add(txtUsr);
-		txtUsr.setColumns(6);
 		
-		txtPwd = new JTextField();
-		txtPwd.setVerifyInputWhenFocusTarget(false);
-		txtPwd.setBounds(154, 134, 154, 20);
-		frmYuconzDatabase.getContentPane().add(txtPwd);
-		txtPwd.setColumns(10);
 		
 		
 		
