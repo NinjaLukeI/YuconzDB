@@ -331,7 +331,7 @@ public class AppController {
 		btnPostReview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if(sArray[2] == "HR" || sArray[2] == "Reviewer") {
+				if(sArray[2].trim().equals("HR") | sArray[2].trim().equals("Reviewer")) {
 					String content = "Review on: " + tBoxReviewee.getText() + "\r\n";
 					content += "Written on: " + LocalDateTime.now() + "\r\n";
 					content += reviewBox.getText();
@@ -391,7 +391,7 @@ public class AppController {
 		btnSearchForRev.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if(sArray[2] == "HR" || sArray[2] == "Reviewer" || sArray[2] == "Director") {
+				if(sArray[2].trim().equals("HR") || sArray[2].trim().equals("Reviewer") || sArray[2].trim().equals("Director")) {
 					String fileToSearch = txtRevDocSrc.getText();
 					try {
 						readRev.setText(AnnRev.readReview(fileToSearch));
@@ -490,7 +490,7 @@ public class AppController {
 						System.out.println(sArray[0]); 
 						System.out.println(sArray[1]); //test to see if values were actually obtained
 						
-						if(usrNameInp.trim().equals(sArray[0].trim()) && usrPwdInp.trim().equals(sArray[1])) {
+						if(usrNameInp.trim().toUpperCase().equals(sArray[0].trim().toUpperCase()) && usrPwdInp.trim().equals(sArray[1])) {
 							JOptionPane.showMessageDialog(null, "Login has been successful.", 
 									"Success", JOptionPane.INFORMATION_MESSAGE);
 							
