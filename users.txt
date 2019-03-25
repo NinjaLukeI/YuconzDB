@@ -1,3 +1,4 @@
-johnsmith,abc123,HR,John Smiths, 15/03/1990, DA6 5HE, 3 Example Road, 01123435567, canModify, canCreate
-lucasok,goldengirl,Employee,Lucas Golds, 1/2/1948, SE3 4FE, 10 Example Road, 02193810291, cantModify, cantCreate
-damian,luke,Employee 
+627JHS,abc123,HR,John Smiths, 15/03/1990, DA6 5HE, 3 Example Road, 01123435567, canModify, canCreate
+120LUG,goldengirl,Employee,Lucas Golds, 1/2/1948, SE3 4FE, 10 Example Road, 02193810291, cantModify, cantCreate
+102DAM,luke,Reviewer, 10/10/1900, DA6 5HE, 2 Example Road, 0110592567, canModify, canCreate
+012RKD,water,Director, 1/25/2019, DA6 5HE, 2 Example Road, 0356603257, canModify, canCreate
