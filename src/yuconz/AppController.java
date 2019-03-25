@@ -59,6 +59,7 @@ public class AppController {
 	private JTextField tBoxReviewee;
 	private JTextField tBoxSignReviewee;
 	private JTextField txtRevDocSrc;
+	private String sArray[];
 
 	/**
 	 * Launch the application.
@@ -93,6 +94,7 @@ public class AppController {
 		//this is opening the users.txt file that stores information about each user of the system
 		
 		AnnualReview AnnRev = new AnnualReview();
+		Authoriser Auth = new Authoriser();
 		
 		frmYuconzDatabase = new JFrame();
 		frmYuconzDatabase.setVisible(true);
@@ -125,7 +127,7 @@ public class AppController {
 		frmYuconzDatabase.getContentPane().add(tabbedPane);
 		
 		JButton btnModify = new JButton("Modify Personal File");
-		btnModify.setBounds(28, 305, 172, 23);
+		btnModify.setBounds(131, 307, 172, 23);
 		
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -133,38 +135,54 @@ public class AppController {
 				//so for example, after this point, the code would be moved to another class.
 				//in it's place, there would be a function call to said method, in this class.
 				
+				
+				
 				Scanner in;
 				try {
 					in = new Scanner(users);
 					
 					while(in.hasNextLine()) {
-						String s = in.nextLine(); //for looping through the users file
-						String[] sArray = s.split(","); //this code takes each value on a line and removes commas seperating them
 						
 						
-						Path path = Paths.get("users.txt");
-						Charset charset = StandardCharsets.UTF_8;
-						
-						//tries to get everything from lines in the yuconz system, and replace them with details in the users.txt file
-						try {
-							String content = new String(Files.readAllBytes(path), charset);
-							content = content.replaceAll(sArray[3], txtName.getText());
-							content = content.replaceAll(sArray[4], txtDob.getText());
-							content = content.replaceAll(sArray[5], txtPostcode.getText());
-							content = content.replaceAll(sArray[6], txtAddress.getText());
-							content = content.replaceAll(sArray[7], txtTelNum.getText());
-							Files.write(path, content.getBytes(charset));
-							
-							JOptionPane.showMessageDialog(null, "Details have been successfully modified.", 
-									"Success", JOptionPane.INFORMATION_MESSAGE);
-							
-							//closes the scanner
-							in.close();
-							
-							
-						} catch (IOException e1) {
-							e1.printStackTrace();
+						if(!sArray[2].trim().equals("HR")) {
+							try {
+								Auth.logAttempt(sArray[0].trim(), "modify");
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							System.out.println("naughty");
+							break;
 						}
+						else {
+							System.out.println(sArray[0]);
+							Path path = Paths.get("users.txt");
+							Charset charset = StandardCharsets.UTF_8;
+							
+							//tries to get everything from lines in the yuconz system, and replace them with details in the users.txt file
+							try {
+								String content = new String(Files.readAllBytes(path), charset);
+								content = content.replaceAll(sArray[3], txtName.getText());
+								content = content.replaceAll(sArray[4], txtDob.getText());
+								content = content.replaceAll(sArray[5], txtPostcode.getText());
+								content = content.replaceAll(sArray[6], txtAddress.getText());
+								content = content.replaceAll(sArray[7], txtTelNum.getText());
+								Files.write(path, content.getBytes(charset));
+								
+								JOptionPane.showMessageDialog(null, "Details have been successfully modified.", 
+										"Success", JOptionPane.INFORMATION_MESSAGE);
+								
+								//closes the scanner
+								in.close();
+								
+								
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							
+						}
+						
+						
 						
 						
 					}
@@ -183,12 +201,6 @@ public class AppController {
 		JPanel personalDetails = new JPanel();
 		tabbedPane.addTab("Personal Details", null, personalDetails, null);
 		personalDetails.setLayout(null);
-		
-		
-		
-		JButton btnCreatePersonalFile = new JButton("Create Personal File");
-		btnCreatePersonalFile.setBounds(247, 305, 172, 23);
-		personalDetails.add(btnCreatePersonalFile);
 		
 		JLabel lblName = new JLabel("Name:");
 		lblName.setBounds(25, 59, 84, 14);
@@ -212,31 +224,26 @@ public class AppController {
 		txtName = new JTextField();
 		txtName.setBounds(132, 56, 171, 20);
 		personalDetails.add(txtName);
-		txtName.setEditable(false);
 		txtName.setColumns(10);
 		
 		txtDob = new JTextField();
 		txtDob.setBounds(132, 226, 171, 20);
 		personalDetails.add(txtDob);
-		txtDob.setEditable(false);
 		txtDob.setColumns(10);
 		
 		txtPostcode = new JTextField();
 		txtPostcode.setBounds(132, 185, 91, 20);
 		personalDetails.add(txtPostcode);
-		txtPostcode.setEditable(false);
 		txtPostcode.setColumns(10);
 		
 		txtAddress = new JTextField();
 		txtAddress.setBounds(132, 94, 171, 20);
 		personalDetails.add(txtAddress);
-		txtAddress.setEditable(false);
 		txtAddress.setColumns(10);
 		
 		txtTelNum = new JTextField();
 		txtTelNum.setBounds(132, 134, 171, 20);
 		personalDetails.add(txtTelNum);
-		txtTelNum.setEditable(false);
 		txtTelNum.setColumns(10);
 		
 		JButton btnLogout = new JButton("Logout");
@@ -252,28 +259,7 @@ public class AppController {
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setBounds(146, 258, 243, 23);
 		
-		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				tabbedPane.setVisible(false);
-				btnLogin.setVisible(true);
-				txtUsr.setText("");
-				txtPwd.setText("");
-				txtName.setText("");
-				txtDob.setText("");
-				txtPostcode.setText("");
-				txtAddress.setText("");
-				txtTelNum.setText("");
-				txtName.setEditable(false);
-				txtDob.setEditable(false);
-				txtPostcode.setEditable(false);
-				txtAddress.setEditable(false);
-				txtTelNum.setEditable(false);
-				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
-						"Success", JOptionPane.INFORMATION_MESSAGE);
-				
-			}
-		});
+		
 		
 		JPanel annualReview = new JPanel();
 		tabbedPane.addTab("Write Review", null, annualReview, null);
@@ -345,22 +331,35 @@ public class AppController {
 		btnPostReview.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String content = "Review on: " + tBoxReviewee.getText() + "\r\n";
-				content += "Written on: " + LocalDateTime.now() + "\r\n";
-				content += reviewBox.getText();
-				content += "\r\n" + "Signed by: " + tBoxReviewer1.getText() + " and " + tBoxReviewer2.getText() + ".";
-				System.out.println(content);
-				
-				try {
-					AnnRev.saveNewReview(tBoxReviewee.getText(), content);
-					JOptionPane.showMessageDialog(null, "Review has successfully been made.", 
-							"Success", JOptionPane.INFORMATION_MESSAGE);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Review could not be posted.",
-							"Error", JOptionPane.ERROR_MESSAGE);
+				if(sArray[2] == "HR" || sArray[2] == "Reviewer") {
+					String content = "Review on: " + tBoxReviewee.getText() + "\r\n";
+					content += "Written on: " + LocalDateTime.now() + "\r\n";
+					content += reviewBox.getText();
+					content += "\r\n" + "Signed by: " + tBoxReviewer1.getText() + " and " + tBoxReviewer2.getText() + ".";
+					System.out.println(content);
+					
+					try {
+						AnnRev.saveNewReview(tBoxReviewee.getText(), content);
+						JOptionPane.showMessageDialog(null, "Review has successfully been made.", 
+								"Success", JOptionPane.INFORMATION_MESSAGE);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Review could not be posted.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
+				else {
+					try {
+						Auth.logAttempt(sArray[0], "post a review");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "An error has occurred.",
+								"Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				
 				
 			}
 		});
@@ -381,7 +380,7 @@ public class AppController {
 		txtRevDocSrc.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(96, 144, 290, 206);
+		scrollPane.setBounds(96, 144, 290, 151);
 		readReview.add(scrollPane);
 		
 		JTextPane readRev = new JTextPane();
@@ -392,13 +391,24 @@ public class AppController {
 		btnSearchForRev.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String fileToSearch = txtRevDocSrc.getText();
-				try {
-					readRev.setText(AnnRev.readReview(fileToSearch));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(sArray[2] == "HR" || sArray[2] == "Reviewer" || sArray[2] == "Director") {
+					String fileToSearch = txtRevDocSrc.getText();
+					try {
+						readRev.setText(AnnRev.readReview(fileToSearch));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+				else {
+					try {
+						Auth.logAttempt(sArray[0], "search for a review");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
 				
 			}
 		});
@@ -439,6 +449,27 @@ public class AppController {
 		
 		login.add(btnLogin);
 		
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				tabbedPane.setVisible(false);
+				btnLogin.setVisible(true);
+				txtUsr.setText("");
+				txtPwd.setText("");
+				txtName.setText("");
+				txtDob.setText("");
+				txtPostcode.setText("");
+				txtAddress.setText("");
+				txtTelNum.setText("");
+				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
+						"Success", JOptionPane.INFORMATION_MESSAGE);
+				login.setVisible(true);
+				sArray = null;
+				
+				
+			}
+		});
+		
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -450,7 +481,7 @@ public class AppController {
 					//loops through lines in the users file
 					while(in.hasNextLine()) {
 						String s = in.nextLine();
-						String[] sArray = s.split(","); //splits the values in the users.txt file
+						sArray = s.split(","); //splits the values in the users.txt file
 						
 						String usrNameInp = txtUsr.getText();
 						String usrPwdInp = String.valueOf(txtPwd.getPassword());
@@ -468,14 +499,7 @@ public class AppController {
 							btnLogin.setVisible(false);//this removes the login button from being visible
 							login.setVisible(false);
 							
-							//if user has perms to modify, the modify button will be visible, otherwise it'll be invisible
 							
-							if(!sArray[8].trim().equals("canModify")) {
-								btnModify.setVisible(false);
-							}
-							else {
-								btnModify.setVisible(true);
-							}
 							
 							
 							lblWelcomeUser.setText("Welcome " + sArray[0]);
@@ -487,14 +511,6 @@ public class AppController {
 							txtAddress.setText(sArray[6]);
 							txtTelNum.setText(sArray[7]);
 							
-							//if they have this flag in the users file, they'll be able to modify
-							if(sArray[8].trim().equals("canModify")) {
-								txtName.setEditable(true);
-								txtDob.setEditable(true);
-								txtPostcode.setEditable(true);
-								txtAddress.setEditable(true);
-								txtTelNum.setEditable(true);
-							}
 							
 							
 							
@@ -507,6 +523,12 @@ public class AppController {
 							if(in.hasNextLine() == false) {
 								JOptionPane.showMessageDialog(null, "Invalid username or password.",
 										"Error", JOptionPane.ERROR_MESSAGE);
+								try {
+									Auth.logAttempt(usrNameInp, "log in with an incorrect password.");
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 							}
 							
 						}
