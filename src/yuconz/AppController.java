@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import java.awt.AWTException; 
@@ -28,6 +29,9 @@ import java.awt.Label;
 import javax.swing.BoxLayout;
 import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 //note for other programmers:
 //because this is prototype code; this is probably unlike how the actual code should be
@@ -48,6 +52,13 @@ public class AppController {
 	private JTextField txtPostcode;
 	private JTextField txtAddress;
 	private JTextField txtTelNum;
+	private JTextField tBoxReviewer1;
+	private JTextField tBoxSignRev1;
+	private JTextField tBoxReviewer2;
+	private JTextField tBoxSignRev2;
+	private JTextField tBoxReviewee;
+	private JTextField tBoxSignReviewee;
+	private JTextField txtRevDocSrc;
 
 	/**
 	 * Launch the application.
@@ -81,118 +92,41 @@ public class AppController {
 		File users = new File("users.txt");
 		//this is opening the users.txt file that stores information about each user of the system
 		
-		AuthenticationServer AuthServ = new AuthenticationServer();
+		AnnualReview AnnRev = new AnnualReview();
 		
 		frmYuconzDatabase = new JFrame();
 		frmYuconzDatabase.setVisible(true);
 		frmYuconzDatabase.setTitle("Yuconz Database");
-		frmYuconzDatabase.setBounds(100, 100, 450, 300);
+		frmYuconzDatabase.setBounds(100, 100, 514, 428);
 		frmYuconzDatabase.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmYuconzDatabase.getContentPane().setLayout(null);
+		
+		
+		
+		/**this code is responsible for writing to the users.txt file, modifying personal details
+		 * this is in relation to user files
+		 * potentially this sort of code would be in database.
+		 * when moving this code to it's own individual class, after the 'actionPerformed' method
+		 * is called, the code can just be called from the database class or w/e class this code would pertain to.
+		 */
+		
+		/**this button is responsible for 'logging' the user into the system.
+		 * but like all the other sort of 'methods' in this appcontroller class, all of the code
+		 * can just be moved to possibly the authenticator class, and a call just being made.
+		 * the only thing that needs to be noted is because this is prototype code; 
+		 * it does not have the implementations the UML document states, so those sorts of things would need to be added
+		 * 
+		 */
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setVisible(false);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		tabbedPane.setBounds(0, 0, 434, 261);
+		tabbedPane.setBounds(0, 0, 498, 389);
 		frmYuconzDatabase.getContentPane().add(tabbedPane);
 		
-		JPanel personalDetails = new JPanel();
-		tabbedPane.addTab("Personal Details", null, personalDetails, null);
-		personalDetails.setLayout(null);
-		
 		JButton btnModify = new JButton("Modify Personal File");
-		btnModify.setBounds(52, 186, 172, 23);
-		personalDetails.add(btnModify);
+		btnModify.setBounds(28, 305, 172, 23);
 		
-		JButton btnCreatePersonalFile = new JButton("Create Personal File");
-		btnCreatePersonalFile.setBounds(234, 186, 172, 23);
-		personalDetails.add(btnCreatePersonalFile);
-		
-		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(28, 44, 84, 14);
-		personalDetails.add(lblName);
-		
-		JLabel lblDateOfBirth = new JLabel("Date of Birth:");
-		lblDateOfBirth.setBounds(25, 158, 111, 14);
-		personalDetails.add(lblDateOfBirth);
-		
-		JLabel lblPostcode = new JLabel("Postcode:");
-		lblPostcode.setBounds(28, 126, 108, 14);
-		personalDetails.add(lblPostcode);
-		
-		JLabel lblAddress = new JLabel("Address:");
-		lblAddress.setBounds(28, 72, 84, 14);
-		personalDetails.add(lblAddress);
-		
-		JLabel lblWelcomeUser = new JLabel("Welcome, User");
-		lblWelcomeUser.setBounds(18, 9, 175, 14);
-		personalDetails.add(lblWelcomeUser);
-		
-		txtName = new JTextField();
-		txtName.setBounds(132, 41, 171, 20);
-		personalDetails.add(txtName);
-		txtName.setEditable(false);
-		txtName.setColumns(10);
-		
-		txtDob = new JTextField();
-		txtDob.setBounds(132, 155, 171, 20);
-		personalDetails.add(txtDob);
-		txtDob.setEditable(false);
-		txtDob.setColumns(10);
-		
-		txtPostcode = new JTextField();
-		txtPostcode.setBounds(132, 123, 88, 20);
-		personalDetails.add(txtPostcode);
-		txtPostcode.setEditable(false);
-		txtPostcode.setColumns(10);
-		
-		txtAddress = new JTextField();
-		txtAddress.setBounds(132, 69, 171, 20);
-		personalDetails.add(txtAddress);
-		txtAddress.setEditable(false);
-		txtAddress.setColumns(10);
-		
-		txtTelNum = new JTextField();
-		txtTelNum.setBounds(132, 97, 171, 20);
-		personalDetails.add(txtTelNum);
-		txtTelNum.setEditable(false);
-		txtTelNum.setColumns(10);
-		
-		JButton btnLogout = new JButton("Logout");
-		btnLogout.setBounds(333, 5, 86, 23);
-		personalDetails.add(btnLogout);
-		
-		JLabel lblTelephoneNumber = new JLabel("Telephone Num:");
-		lblTelephoneNumber.setBounds(28, 100, 108, 14);
-		personalDetails.add(lblTelephoneNumber);
-		
-		JPanel panel = new JPanel();
-		tabbedPane.addTab("Annual Review", null, panel, null);
-		
-		JButton btnLogin = new JButton("Login");
-		
-		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				tabbedPane.setVisible(false);
-				btnLogin.setVisible(true);
-				txtUsr.setText("");
-				txtPwd.setText("");
-				txtName.setText("");
-				txtDob.setText("");
-				txtPostcode.setText("");
-				txtAddress.setText("");
-				txtTelNum.setText("");
-				txtName.setEditable(false);
-				txtDob.setEditable(false);
-				txtPostcode.setEditable(false);
-				txtAddress.setEditable(false);
-				txtTelNum.setEditable(false);
-				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
-						"Success", JOptionPane.INFORMATION_MESSAGE);
-				
-			}
-		});
 		btnModify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -243,33 +177,267 @@ public class AppController {
 				
 		}});
 		
+		JLabel lblWelcomeUser = new JLabel("Welcome, User");
+		lblWelcomeUser.setBounds(18, 9, 175, 14);
+		
+		JPanel personalDetails = new JPanel();
+		tabbedPane.addTab("Personal Details", null, personalDetails, null);
+		personalDetails.setLayout(null);
+		
+		
+		
+		JButton btnCreatePersonalFile = new JButton("Create Personal File");
+		btnCreatePersonalFile.setBounds(247, 305, 172, 23);
+		personalDetails.add(btnCreatePersonalFile);
+		
+		JLabel lblName = new JLabel("Name:");
+		lblName.setBounds(25, 59, 84, 14);
+		personalDetails.add(lblName);
+		
+		JLabel lblDateOfBirth = new JLabel("Date of Birth:");
+		lblDateOfBirth.setBounds(25, 229, 111, 14);
+		personalDetails.add(lblDateOfBirth);
+		
+		JLabel lblPostcode = new JLabel("Postcode:");
+		lblPostcode.setBounds(28, 188, 108, 14);
+		personalDetails.add(lblPostcode);
+		
+		JLabel lblAddress = new JLabel("Address:");
+		lblAddress.setBounds(28, 97, 84, 14);
+		personalDetails.add(lblAddress);
+		
+		
+		personalDetails.add(lblWelcomeUser);
+		
+		txtName = new JTextField();
+		txtName.setBounds(132, 56, 171, 20);
+		personalDetails.add(txtName);
+		txtName.setEditable(false);
+		txtName.setColumns(10);
+		
+		txtDob = new JTextField();
+		txtDob.setBounds(132, 226, 171, 20);
+		personalDetails.add(txtDob);
+		txtDob.setEditable(false);
+		txtDob.setColumns(10);
+		
+		txtPostcode = new JTextField();
+		txtPostcode.setBounds(132, 185, 91, 20);
+		personalDetails.add(txtPostcode);
+		txtPostcode.setEditable(false);
+		txtPostcode.setColumns(10);
+		
+		txtAddress = new JTextField();
+		txtAddress.setBounds(132, 94, 171, 20);
+		personalDetails.add(txtAddress);
+		txtAddress.setEditable(false);
+		txtAddress.setColumns(10);
+		
+		txtTelNum = new JTextField();
+		txtTelNum.setBounds(132, 134, 171, 20);
+		personalDetails.add(txtTelNum);
+		txtTelNum.setEditable(false);
+		txtTelNum.setColumns(10);
+		
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.setBounds(397, 5, 86, 23);
+		personalDetails.add(btnLogout);
+		
+		JLabel lblTelephoneNumber = new JLabel("Telephone Num:");
+		lblTelephoneNumber.setBounds(28, 137, 108, 14);
+		personalDetails.add(lblTelephoneNumber);
+		
+		
+		personalDetails.add(btnModify);
+		JButton btnLogin = new JButton("Login");
+		btnLogin.setBounds(146, 258, 243, 23);
+		
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				tabbedPane.setVisible(false);
+				btnLogin.setVisible(true);
+				txtUsr.setText("");
+				txtPwd.setText("");
+				txtName.setText("");
+				txtDob.setText("");
+				txtPostcode.setText("");
+				txtAddress.setText("");
+				txtTelNum.setText("");
+				txtName.setEditable(false);
+				txtDob.setEditable(false);
+				txtPostcode.setEditable(false);
+				txtAddress.setEditable(false);
+				txtTelNum.setEditable(false);
+				JOptionPane.showMessageDialog(null, "You have successfully been logged out. ", 
+						"Success", JOptionPane.INFORMATION_MESSAGE);
+				
+			}
+		});
+		
+		JPanel annualReview = new JPanel();
+		tabbedPane.addTab("Write Review", null, annualReview, null);
+		annualReview.setLayout(null);
+		
+		JEditorPane reviewBox = new JEditorPane();
+		reviewBox.setBounds(10, 167, 409, 89);
+		annualReview.add(reviewBox);
+		
+		tBoxReviewer1 = new JTextField();
+		tBoxReviewer1.setBounds(33, 25, 86, 20);
+		annualReview.add(tBoxReviewer1);
+		tBoxReviewer1.setColumns(10);
+		
+		tBoxSignRev1 = new JTextField();
+		tBoxSignRev1.setBounds(33, 114, 86, 20);
+		annualReview.add(tBoxSignRev1);
+		tBoxSignRev1.setColumns(10);
+		
+		tBoxReviewer2 = new JTextField();
+		tBoxReviewer2.setBounds(156, 25, 86, 20);
+		annualReview.add(tBoxReviewer2);
+		tBoxReviewer2.setColumns(10);
+		
+		tBoxSignRev2 = new JTextField();
+		tBoxSignRev2.setBounds(156, 114, 86, 20);
+		annualReview.add(tBoxSignRev2);
+		tBoxSignRev2.setColumns(10);
+		
+		tBoxReviewee = new JTextField();
+		tBoxReviewee.setColumns(10);
+		tBoxReviewee.setBounds(285, 25, 86, 20);
+		annualReview.add(tBoxReviewee);
+		
+		JLabel lblstReviewer = new JLabel("1st Reviewer");
+		lblstReviewer.setBounds(33, 11, 116, 14);
+		annualReview.add(lblstReviewer);
+		
+		JLabel lblndReviewer = new JLabel("2nd Reviewer");
+		lblndReviewer.setBounds(156, 11, 104, 14);
+		annualReview.add(lblndReviewer);
+		
+		tBoxSignReviewee = new JTextField();
+		tBoxSignReviewee.setColumns(10);
+		tBoxSignReviewee.setBounds(285, 114, 86, 20);
+		annualReview.add(tBoxSignReviewee);
+		
+		JLabel lblReviewee = new JLabel("Reviewee");
+		lblReviewee.setBounds(285, 11, 113, 14);
+		annualReview.add(lblReviewee);
+		
+		JLabel lblNewLabel = new JLabel("Sign Off Review");
+		lblNewLabel.setBounds(156, 74, 126, 14);
+		annualReview.add(lblNewLabel);
+		
+		JLabel lblstReviewer_1 = new JLabel("1st Reviewer");
+		lblstReviewer_1.setBounds(33, 99, 120, 14);
+		annualReview.add(lblstReviewer_1);
+		
+		JLabel lblndReviewer_1 = new JLabel("2nd Reviewer");
+		lblndReviewer_1.setBounds(156, 99, 104, 14);
+		annualReview.add(lblndReviewer_1);
+		
+		JLabel lblReviewee_1 = new JLabel("Reviewee");
+		lblReviewee_1.setBounds(285, 99, 113, 14);
+		annualReview.add(lblReviewee_1);
+		
+		JButton btnPostReview = new JButton("Post Review");
+		btnPostReview.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				String content = "Review on: " + tBoxReviewee.getText() + "\r\n";
+				content += "Written on: " + LocalDateTime.now() + "\r\n";
+				content += reviewBox.getText();
+				content += "\r\n" + "Signed by: " + tBoxReviewer1.getText() + " and " + tBoxReviewer2.getText() + ".";
+				System.out.println(content);
+				
+				try {
+					AnnRev.saveNewReview(tBoxReviewee.getText(), content);
+					JOptionPane.showMessageDialog(null, "Review has successfully been made.", 
+							"Success", JOptionPane.INFORMATION_MESSAGE);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Review could not be posted.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+		});
+		btnPostReview.setBounds(186, 298, 128, 23);
+		annualReview.add(btnPostReview);
+		
+		JPanel readReview = new JPanel();
+		tabbedPane.addTab("Read Review", null, readReview, null);
+		readReview.setLayout(null);
+		
+		JLabel lblEnterTheName = new JLabel("Enter the name of the review document you'd wish to view:");
+		lblEnterTheName.setBounds(96, 54, 354, 14);
+		readReview.add(lblEnterTheName);
+		
+		txtRevDocSrc = new JTextField();
+		txtRevDocSrc.setBounds(96, 80, 290, 20);
+		readReview.add(txtRevDocSrc);
+		txtRevDocSrc.setColumns(10);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(96, 144, 290, 206);
+		readReview.add(scrollPane);
+		
+		JTextPane readRev = new JTextPane();
+		readRev.setEditable(false);
+		scrollPane.setViewportView(readRev);
+		
+		JButton btnSearchForRev = new JButton("Search");
+		btnSearchForRev.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				String fileToSearch = txtRevDocSrc.getText();
+				try {
+					readRev.setText(AnnRev.readReview(fileToSearch));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		btnSearchForRev.setBounds(192, 110, 89, 23);
+		readReview.add(btnSearchForRev);
+		
+		
+		JPanel login = new JPanel();
+		login.setBounds(0, 0, 498, 389);
+		frmYuconzDatabase.getContentPane().add(login);
+		login.setLayout(null);
+		
 		txtUsr = new JTextField();
-		txtUsr.setBounds(154, 94, 154, 20);
-		frmYuconzDatabase.getContentPane().add(txtUsr);
+		txtUsr.setBounds(218, 139, 96, 20);
+		login.add(txtUsr);
 		txtUsr.setColumns(6);
 		
 		txtPwd = new JPasswordField();
+		txtPwd.setBounds(218, 199, 96, 20);
+		login.add(txtPwd);
 		txtPwd.setVerifyInputWhenFocusTarget(false);
-		txtPwd.setBounds(154, 134, 154, 20);
-		frmYuconzDatabase.getContentPane().add(txtPwd);
 		txtPwd.setColumns(10);
 		
+		JLabel lblYuconz = new JLabel("Welcome To Yuconz User Database");
+		lblYuconz.setBounds(159, 6, 218, 17);
+		login.add(lblYuconz);
+		lblYuconz.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblYuconz.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblUsername = new JLabel("Username:");
+		lblUsername.setBounds(237, 127, 86, 14);
+		login.add(lblUsername);
+		
+		JLabel lblPassword = new JLabel("Password:");
+		lblPassword.setBounds(237, 187, 96, 14);
+		login.add(lblPassword);
 		
 		
-		/**this code is responsible for writing to the users.txt file, modifying personal details
-		 * this is in relation to user files
-		 * potentially this sort of code would be in database.
-		 * when moving this code to it's own individual class, after the 'actionPerformed' method
-		 * is called, the code can just be called from the database class or w/e class this code would pertain to.
-		 */
-		
-		/**this button is responsible for 'logging' the user into the system.
-		 * but like all the other sort of 'methods' in this appcontroller class, all of the code
-		 * can just be moved to possibly the authenticator class, and a call just being made.
-		 * the only thing that needs to be noted is because this is prototype code; 
-		 * it does not have the implementations the UML document states, so those sorts of things would need to be added
-		 * 
-		 */
+		login.add(btnLogin);
 		
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -298,6 +466,7 @@ public class AppController {
 							tabbedPane.setVisible(true); //this is setting the YuconzSysFrame to being visible.
 							//this frame is the one that shows the employee details and such.
 							btnLogin.setVisible(false);//this removes the login button from being visible
+							login.setVisible(false);
 							
 							//if user has perms to modify, the modify button will be visible, otherwise it'll be invisible
 							
@@ -352,33 +521,6 @@ public class AppController {
 			}
 		});
 		
-		
-		btnLogin.setBounds(186, 199, 89, 23);
-		
-		
-		
-		
-		JLabel lblYuconz = new JLabel("Welcome To Yuconz User Database");
-		lblYuconz.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblYuconz.setHorizontalAlignment(SwingConstants.CENTER);
-		lblYuconz.setBounds(95, 26, 258, 14);
-		frmYuconzDatabase.getContentPane().add(lblYuconz);
-		
-		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setBounds(39, 97, 64, 14);
-		frmYuconzDatabase.getContentPane().add(lblUsername);
-		
-		JLabel lblPassword = new JLabel("Password:");
-		lblPassword.setBounds(39, 137, 64, 14);
-		frmYuconzDatabase.getContentPane().add(lblPassword);
-		
-		
-		
-		
-		
-
-		
-		frmYuconzDatabase.getContentPane().add(btnLogin);
 		
 		
 	}
